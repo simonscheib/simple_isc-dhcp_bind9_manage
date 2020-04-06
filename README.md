@@ -25,7 +25,7 @@ This tool produces 2 HTML pages to be served by any Webserver. Filenames can be 
 * net_all.html 
   * Lists all hosts
 
-## hosts.yaml syntax
+## hosts.yml syntax
 
 ```yaml
 zones:
