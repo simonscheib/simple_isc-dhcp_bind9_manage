@@ -5,7 +5,7 @@ This tool written in perl uses a single YAML file as single-source-of-truth to c
 * BIND DNS Server (supports multiple zones)
   * forward records
   * reverse records
-* A simple website where all hosts are listed
+* A simple website using bootstrap where all hosts are listed
 
 ## Prerequisites
 * isc-dhcp-server
@@ -26,29 +26,59 @@ This tool produces 2 HTML pages to be served by any Webserver. Filenames can be 
   * Lists all hosts
 
 ## hosts.yaml syntax
-
 ```yaml
 zones:
-  [first zone]:
+  internal.lan:
     reverse: [reverse notation of Subnet, e.g. 1.168.192.in-addr.arpa]
-  [second zone]:
-    reverse: [reverse notation of Subnet, e.g. 1.168.192.in-addr.arpa]
+    subnet: 192.168.1.0/24 # subnet cidr
+    description: Main Network # simple description
+    expanded: "true" # "true" or "false". controls whether navbar is expanded by default. quotation marks needed
+    hosts:
+      server: # hostname
+        ip: 192.168.1.2
+        ipv6: fe80::ec4:7aff:fe95:e4ca
+        no_dhcp: true # whether DHCPd config is needed
+        web: # webservices you want to see on the web page
+          services:
+            PLEX: # service name
+              url: ":32400/web" # part behind hostname
+              mode: http # http or https
+            Grafana:
+              url: ":3000"
+              mode: http
+      brother:
+        ip: 192.168.1.3
+        mac: 3c:2a:f4:c9:5a:a9
+        web:
+          services:
+            Frontend:
+              url: "/"
+              mode: https
+  iot.internal.lan:
+    reverse: 2.168.192.in-addr.arpa
+    expanded: "false"
+    subnet: 192.168.2.0/24
+    description: IoT Devices
+    hosts:
+      hue:
+        ip: 192.168.2.2
+        mac: 7c:2f:90:af:b3:4e
 ```
 
-For Hosts entries there are several different options. (See basic hosts.yml for examples)
+For Hosts entries there are several different options. (See basic hosts.yml for examples). You can specify as many as you need under each zone.
 
 Simple host with DHCP and DNS entry
 ```yaml
+hosts:
   [hostname]:
-    zone: [zone from above]
     ip: [IPv4]
     mac: [MAC address]
 ```
 
 Simple host with DNS entry (no DHCP)
 ```yaml
+hosts:
   [hostname]:
-    zone: [zone from above]
     ip: [IPv4]
     no_dhcp: true
 ```
@@ -56,18 +86,17 @@ Simple host with DNS entry (no DHCP)
 Simple host with DHCP, link-local IPV6 and webservices you want to see on the web page.
 ```yaml
 hosts:
-  [hostname]:
-    zone: [zone from above]
-    ip: [IPv4]
-    ipv6: [IPv6]
-    web:
-      services:
-        [service_name]:
-          url: "[part behind hostname]"
-          mode: [either http or https]
-        [service_name]:
-          url: "[part behind hostname]"
-          mode: [either http or https]
+[hostname]:
+  ip: [IPv4]
+  ipv6: [IPv6]
+  web:
+    services:
+      [service_name]:
+        url: "[part behind hostname]"
+        mode: [either http or https]
+      [service_name]:
+        url: "[part behind hostname]"
+        mode: [either http or https]
 ```
 
 ## Deploying
@@ -77,7 +106,7 @@ sudo perl config.pl
 ```
 
 ## Example
-With the host.yml in this repo, this is what you'll get:
+With the host.yml in this repo you'll get:
 
 ### DNS
 * Zone: internal.lan
