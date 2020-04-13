@@ -7,6 +7,11 @@ This tool written in perl uses a single YAML file as single-source-of-truth to c
   * reverse records
 * A simple website using bootstrap where all hosts are listed
 
+## Disclaimer
+* No real error handling :-)
+* Bootstrap includes are expected to be in `$HTML_ROOT/bootstrap/`
+
+
 ## Prerequisites
 * isc-dhcp-server
   * Must be already configured and running
@@ -25,12 +30,7 @@ This tool produces 2 HTML pages to be served by any Webserver. Filenames can be 
 * net_all.html 
   * Lists all hosts
 
-<<<<<<< HEAD
 ## hosts.yaml syntax
-=======
-## hosts.yml syntax
-
->>>>>>> f59813c4f0e4e47c5d2fa2dd2f91533d83fea1e7
 ```yaml
 zones:
   internal.lan:
@@ -142,9 +142,6 @@ With the host.yml in this repo you'll get:
 ### Website
 Only Hosts with services:<br>
 <img src=service_hosts.jpg border="10" width="50%" height="50%"></img>
-
-All Hosts:<br>
-<img src=all_hosts.jpg border="10" width="50%" height="50%"></img>
 
 ## Limitations
 If you're using VLAN's to seperate subnets (e.g. IoT in this example): Please configure your DHCP server, so it accepts a single included file with fixed address in multiple subnets.
